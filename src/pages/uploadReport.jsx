@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { request } from '../api/api';
-import Loader from '../components/Loader';
+import Loader from '../components/loader';
 import { useNavigate } from 'react-router-dom';
 
 export default function UploadReport(){

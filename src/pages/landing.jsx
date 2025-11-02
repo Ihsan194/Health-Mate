@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../components/navbar";   // uses your existing navbar.jsx
-import Loader from "../components/Loader";   // uses your existing Loader.jsx
+import Loader from "../components/loader";   // uses your existing Loader.jsx
 import Toast from "../components/toast";     // uses your existing Toast.jsx
 import "../styles/main.css";
 import "../styles/components.css";
