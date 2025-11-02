@@ -1,18 +1,32 @@
-import { Link } from "react-router-dom";
-import "./navbar.css";
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { clearToken, getToken } from '../utils/auth';
 
-export default function Navbar() {
+export default function Navbar(){
+  const token = getToken();
+  const nav = useNavigate();
+  const logout = () => { clearToken(); nav('/'); };
+
   return (
-    <nav className="navbar">
-      <div className="navbar-logo">
-        <Link to="/">HealthMate</Link>
+    <nav className="nav">
+      <div className="nav-left">
+        <Link className="brand" to="/">HealthMate</Link>
       </div>
-      <ul className="navbar-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><Link to="/signup">Sign Up</Link></li>
-        <li><Link to="/login">Login</Link></li>
-      </ul>
+      <div className="nav-right">
+        <Link to="/">Home</Link>
+        {token ? (
+          <>
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/upload">Upload</Link>
+            <button className="btn-ghost" onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register" className="btn">Get Started</Link>
+          </>
+        )}
+      </div>
     </nav>
   );
 }

@@ -1,39 +1,31 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "./pages/dashboard";
-import UploadReport from "./pages/uploadReport";
-import ManualVitals from "./pages/manualVitals";
-import ViewReport from "./pages/viewReport";
-import Timeline from "./pages/timeLine";
-import Signup from "./pages/signup";
-import Login from "./pages/login";
-import VerifyOtp from "./pages/otpVerification";
-import DashboardLayout from "./layout/dashboardLayout";
-import LandingPage from "./components/landingPage";
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Landing from './pages/landing';
+import Login from './pages/auth/login';
+import Register from './pages/auth/register';
+import Dashboard from './pages/dashboard';
+import UploadReport from './pages/uploadReport';
+import ViewReport from './pages/viewReport';
+import Timeline from './pages/timeline';
+import Navbar from './components/navbar';
+import ProtectedRoute from './components/protectedRoute';
 
-function App() {
+export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
-
-        {/* Protected Dashboard Routes (wrapped in layout) */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="upload" element={<UploadReport />} />
-          <Route path="vitals" element={<ManualVitals />} />
-          <Route path="reports" element={<ViewReport />} />
-          <Route path="timeline" element={<Timeline />} />
-        </Route>
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Navbar />
+      <main className="container">
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+          <Route path="/upload" element={<ProtectedRoute><UploadReport/></ProtectedRoute>} />
+          <Route path="/report/:id" element={<ProtectedRoute><ViewReport/></ProtectedRoute>} />
+          <Route path="/timeline" element={<ProtectedRoute><Timeline/></ProtectedRoute>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+    </>
   );
 }
-
-export default App;

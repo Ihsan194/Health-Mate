@@ -1,29 +1,42 @@
-import DashboardLayout from "../layout/dashboardLayout";
+import React, { useEffect, useState } from 'react';
+import { request } from '../api/api';
+import Loader from '../components/Loader';
+import { Link } from 'react-router-dom';
 
-export default function Dashboard() {
+export default function Dashboard(){
+  const [files, setFiles] = useState(null);
+  const [err, setErr] = useState(null);
+
+  useEffect(()=> {
+    (async () => {
+      try {
+        const data = await request('/files');
+        setFiles(data);
+      } catch (e) {
+        setErr(e.message || 'Unable to load files');
+      }
+    })();
+  }, []);
+
+  if (!files) return <div className="center"><Loader size={60} /></div>;
+
   return (
-    <DashboardLayout>
-      <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
-      <p className="text-gray-600">
-        Welcome to your HealthMate dashboard. View your reports, vitals, and more.
-      </p>
-
-      <div className="grid grid-cols-3 gap-6 mt-6">
-        <div className="p-6 bg-white rounded-xl shadow">
-          <h2 className="text-lg font-medium mb-2">Blood Pressure</h2>
-          <p className="text-3xl font-semibold text-blue-600">120/80</p>
-        </div>
-
-        <div className="p-6 bg-white rounded-xl shadow">
-          <h2 className="text-lg font-medium mb-2">Sugar Level</h2>
-          <p className="text-3xl font-semibold text-blue-600">95 mg/dL</p>
-        </div>
-
-        <div className="p-6 bg-white rounded-xl shadow">
-          <h2 className="text-lg font-medium mb-2">Weight</h2>
-          <p className="text-3xl font-semibold text-blue-600">68 kg</p>
-        </div>
+    <div>
+      <h1>Your Reports</h1>
+      <div className="grid">
+        <Link to="/upload" className="card big upload-cta">+ Upload new report</Link>
+        {err && <p className="error">{err}</p>}
+        {files.map(f => (
+          <div key={f._id} className="card file-card">
+            <h4>{f.filename}</h4>
+            <small>{new Date(f.uploadedAt).toLocaleString()}</small>
+            <div className="file-actions">
+              <a href={f.url} target="_blank" rel="noreferrer" className="btn-ghost">Preview</a>
+              <Link to={`/report/${f._id}`} className="btn">View Summary</Link>
+            </div>
+          </div>
+        ))}
       </div>
-    </DashboardLayout>
+    </div>
   );
 }

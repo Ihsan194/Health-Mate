@@ -1,34 +1,37 @@
-import DashboardLayout from "../layout/dashboardLayout";
+import React, { useState } from 'react';
+import { request } from '../api/api';
+import Loader from '../components/Loader';
+import { useNavigate } from 'react-router-dom';
 
-export default function UploadReport() {
+export default function UploadReport(){
+  const [file,setFile]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const nav = useNavigate();
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!file) return alert('Select a file');
+    const fd = new FormData();
+    fd.append('file', file);
+    try {
+      setLoading(true);
+      await request('/files/upload', { method: 'POST', body: fd });
+      nav('/dashboard');
+    } catch (e) {
+      alert(e.message || 'Upload failed');
+    } finally { setLoading(false); }
+  };
+
   return (
-    <DashboardLayout>
-      <h1 className="text-2xl font-semibold mb-4">Upload Report</h1>
-
-      <form className="bg-white p-6 rounded-xl shadow w-full max-w-md">
-        <label className="block mb-3">
-          <span className="text-sm text-gray-600">Report Type</span>
-          <input
-            type="text"
-            placeholder="Blood Test, X-ray, etc."
-            className="w-full mt-1 p-2 border rounded-md"
-          />
+    <div className="card">
+      <h2>Upload Medical Report</h2>
+      <form onSubmit={submit}>
+        <label className="file">
+          Choose File
+          <input type="file" accept=".pdf,image/*" onChange={e=>setFile(e.target.files[0])} required/>
         </label>
-
-        <label className="block mb-3">
-          <span className="text-sm text-gray-600">Date</span>
-          <input type="date" className="w-full mt-1 p-2 border rounded-md" />
-        </label>
-
-        <label className="block mb-4">
-          <span className="text-sm text-gray-600">Upload File</span>
-          <input type="file" className="w-full mt-1 p-2 border rounded-md" />
-        </label>
-
-        <button className="w-full bg-[#0a66c2] text-white py-2 rounded-md hover:bg-blue-700">
-          Upload
-        </button>
+        <button className="btn" type="submit" disabled={loading}>{loading ? <Loader size={20}/> : 'Upload'}</button>
       </form>
-    </DashboardLayout>
+    </div>
   );
 }
