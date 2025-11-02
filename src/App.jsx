@@ -6,7 +6,7 @@ import Register from './pages/auth/register';
 import Dashboard from './pages/dashboard';
 import UploadReport from './pages/uploadReport';
 import ViewReport from './pages/viewReport';
-import Timeline from './pages/timeline';
+import Timeline from './pages/timeLine';
 import Navbar from './components/navbar';
 import ProtectedRoute from './components/protectedRoute';
 
